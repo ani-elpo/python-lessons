@@ -1,19 +1,27 @@
 from pprint import pprint
 
+
 def makeGrid(cols):
     grid = []
-
     for x in range(0, cols):
         row = []
         grid.append(row)
         for y in range(0, 10):
             row.append(0)
 
-    pprint(grid)
+    return grid
+
+
+def shoot(row, col):
+    for y in range(row, col):
+        row.append(1)
 
 
 
-makeGrid(10)
+
+grid2 = makeGrid(10)
+pprint(grid2)
+
 
 
 
