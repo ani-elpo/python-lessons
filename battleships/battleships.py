@@ -12,14 +12,14 @@ def makeGrid(rows, cols):
     return grid
 
 
-def shoot(row, col):
-    for y in range(row, col):
-        row.append(1)
+def shoot(grid, row, col):
+    grid[row][col] = 1
 
 
 
 
 grid2 = makeGrid(10, 10)
+shoot(grid2, 3, 1)
 pprint(grid2)
 
 
