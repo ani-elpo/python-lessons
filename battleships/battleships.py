@@ -1,5 +1,10 @@
 from pprint import pprint
 
+EMPTY = "_"
+SHIP = "#"
+HIT = "X"
+MISS = "O"
+
 
 def makeGrid(rows, cols):
     grid = []
@@ -7,27 +12,46 @@ def makeGrid(rows, cols):
         row = []
         grid.append(row)
         for y in range(0, cols):
-            row.append(0)
+            row.append(EMPTY)
 
     return grid
 
 
 def shoot(grid, row, col):
-    grid[row][col] = 1
+    grid[row][col] = HIT
+
+
+def position(grid, row, col, length):
+    grid[row] = int(input())
+    grid[row][col] = int(input())
+    length = int(input())
+    ship = grid[row][col] + length
+    ship = SHIP
+
+
+def grid_print(grid):
+    # for item in grid:
+    #     for cell in item:
+    #         print("n".join(cell))
+    grid = [[EMPTY for x in range(10)] for y in range(10)]
+    for row in grid:
+        print("   ".join(row))
+
+
+
 
 
 
 
 grid2 = makeGrid(10, 10)
-shoot(grid2, 3, 1)
-pprint(grid2)
+grid_print(grid2)
+# shoot(grid2, 3, 1)
+# pprint(grid2)
+# position(grid2, 5, 2, 3)
 
 
 
 
-
-#make grid with 10 cols + 10 rows - DONE
-#each cell has 0 - DONE
-#shoot func --> accepts col + row index and replaces 0 with 1
 
 #create a function that prints grids neatly
+# complete the ship position function
