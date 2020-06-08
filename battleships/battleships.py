@@ -21,15 +21,14 @@ def shoot(grid, row, col):
 
 
 def position(grid, row, col, length):
-    grid[row] = int(input())
-    grid[row][col] = int(input())
-    length = int(input())
-    ship = grid[row][col] + length
-    ship = SHIP
+    grid[row][col] = SHIP
+    # length = int(input())
+    # ship = grid[row][col] + length
+    # ship = SHIP
 
 
 def grid_print(grid):
-    grid = [[EMPTY for row in range(10)] for col in range(10)]
+    # grid = [[EMPTY for row in range(10)] for col in range(10)]
     for row in grid:
         print("   ".join(row))
 
@@ -40,9 +39,9 @@ def grid_print(grid):
 
 
 grid2 = makeGrid(10, 10)
-grid_print(grid2)
+position(grid2, 5, 2, 3)
 shoot(grid2, 3, 0)
-# position(grid2, 5, 2, 3)
+grid_print(grid2)
 
 
 
