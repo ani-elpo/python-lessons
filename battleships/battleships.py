@@ -13,7 +13,6 @@ def makeGrid(rows, cols):
         grid.append(row)
         for y in range(0, cols):
             row.append(EMPTY)
-
     return grid
 
 
@@ -30,10 +29,7 @@ def position(grid, row, col, length):
 
 
 def grid_print(grid):
-    # for item in grid:
-    #     for cell in item:
-    #         print("n".join(cell))
-    grid = [[EMPTY for x in range(10)] for y in range(10)]
+    grid = [[EMPTY for row in range(10)] for col in range(10)]
     for row in grid:
         print("   ".join(row))
 
@@ -45,8 +41,7 @@ def grid_print(grid):
 
 grid2 = makeGrid(10, 10)
 grid_print(grid2)
-# shoot(grid2, 3, 1)
-# pprint(grid2)
+shoot(grid2, 3, 0)
 # position(grid2, 5, 2, 3)
 
 
