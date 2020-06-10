@@ -20,11 +20,22 @@ def shoot(grid, row, col):
     grid[row][col] = HIT
 
 
-def position(grid, row, col, length):
-    grid[row][col] = SHIP
-    # length = int(input())
-    # ship = grid[row][col] + length
-    # ship = SHIP
+class ShipTooLongError(Exception):
+    pass
+
+
+def position(grid, row, col, length, direction = "vertical"):
+    if row + length > 9:
+        raise ShipTooLongError("your ship is too long row ="+str(row)+" length ="+str(length))
+    if direction == "vertical":
+        for i in range(length):
+            grid[row][col] = SHIP
+            row = row + 1
+    if direction == "horizontal":
+        for i in range(length):
+            grid[row][col] = SHIP
+            col = col + 1
+
 
 
 def grid_print(grid):
@@ -40,6 +51,7 @@ def grid_print(grid):
 
 grid2 = makeGrid(10, 10)
 position(grid2, 5, 2, 3)
+position(grid2, 4, 0, 4, direction="horizontal")
 shoot(grid2, 3, 0)
 grid_print(grid2)
 
@@ -47,5 +59,5 @@ grid_print(grid2)
 
 
 
-#create a function that prints grids neatly
-# complete the ship position function
+# complete the ship position function so it makes hor + ver ships
+# check if it's valid (fits) if it's not, raise the error
