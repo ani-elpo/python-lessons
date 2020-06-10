@@ -25,8 +25,14 @@ class ShipTooLongError(Exception):
 
 
 def position(grid, row, col, length, direction = "vertical"):
+
+    # error messages
     if row + length > 9:
         raise ShipTooLongError("your ship is too long row ="+str(row)+" length ="+str(length))
+    if col + length > 9:
+        raise ShipTooLongError("your ship is too long column ="+str(col)+" length ="+str(length))
+
+    # positioning ships
     if direction == "vertical":
         for i in range(length):
             grid[row][col] = SHIP
@@ -51,7 +57,7 @@ def grid_print(grid):
 
 grid2 = makeGrid(10, 10)
 position(grid2, 5, 2, 3)
-position(grid2, 4, 0, 4, direction="horizontal")
+position(grid2, 2, 8, 4, direction="horizontal")
 shoot(grid2, 3, 0)
 grid_print(grid2)
 
