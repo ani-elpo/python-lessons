@@ -36,24 +36,33 @@ class MyGame(arcade.Window):
 
     def setup(self):
         # Create your sprites and sprite lists here
+        self.setup_zombie()
+        self.setup_ground()
+        self.setup_boxes()
 
+    def setup_zombie(self):
         self.zombie = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=TILE_SCALE)
         self.zombie.center_x = TILE_SIZE / 2
         self.zombie.center_y = TILE_SIZE + TILE_SIZE / 2
+        self.zombie.draw()
 
+    def setup_ground(self):
         self.ground = arcade.SpriteList()
 
         for i in range(math.ceil(SCREEN_WIDTH / TILE_SIZE)):
-            lava = arcade.Sprite(":resources:images/tiles/lava.png", scale=TILE_SCALE, center_x=TILE_SIZE / 2, center_y=TILE_SIZE / 2)
-            lava.center_x += i*TILE_SIZE
-            self.ground.append(lava)
+                lava = arcade.Sprite(":resources:images/tiles/lava.png", scale=TILE_SCALE, center_x=TILE_SIZE / 2, center_y=TILE_SIZE / 2)
+                lava.center_x += i*TILE_SIZE
+                self.ground.append(lava)
+        self.ground.draw()
 
+    def setup_boxes(self):
         self.boxes = arcade.SpriteList()
 
         for i in range(BOX_NO):
-            box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
-            box.center_x += i*(TILE_SIZE+(BOX_NO*7))
-            self.boxes.append(box)
+                box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
+                box.center_x += i*(TILE_SIZE+(BOX_NO*7))
+                self.boxes.append(box)
+        self.boxes.draw()
 
 
 
@@ -65,9 +74,12 @@ class MyGame(arcade.Window):
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         arcade.start_render()
-        self.zombie.draw()
-        self.ground.draw()
-        self.boxes.draw()
+        # self.zombie.draw()
+        # self.ground.draw()
+        # self.boxes.draw()
+        self.setup_zombie()
+        self.setup_ground()
+        self.setup_boxes()
 
 
 
@@ -78,6 +90,7 @@ class MyGame(arcade.Window):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
+
 
 
 
