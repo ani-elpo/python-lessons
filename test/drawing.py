@@ -10,6 +10,8 @@ SCREEN_TITLE = "zombie game"
 TILE_SCALE = 0.25
 TILE_SIZE = 32
 
+BOX_NO = 10
+
 
 class MyGame(arcade.Window):
     """
@@ -30,6 +32,7 @@ class MyGame(arcade.Window):
 
         self.zombie = None
         self.ground = None
+        self.boxes = None
 
     def setup(self):
         # Create your sprites and sprite lists here
@@ -45,6 +48,12 @@ class MyGame(arcade.Window):
             lava.center_x += i*TILE_SIZE
             self.ground.append(lava)
 
+        self.boxes = arcade.SpriteList()
+
+        for i in range(BOX_NO):
+            box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
+            box.center_x += i*(TILE_SIZE+(BOX_NO*7))
+            self.boxes.append(box)
 
 
 
@@ -58,6 +67,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.zombie.draw()
         self.ground.draw()
+        self.boxes.draw()
 
 
 
@@ -88,6 +98,6 @@ if __name__ == "__main__":
 
 # change screen width DONE
 # scale zombie and put him on the grass DONE
-# place boxes on grass
+# place boxes on grass DONE
 # create floating platforms
 # organise setup method (refactoring)
