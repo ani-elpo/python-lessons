@@ -13,6 +13,7 @@ TILE_SIZE = 64
 BOX_NO = 5
 PLAT_NO = 5
 
+MOVEMENT_SPEED = 5
 
 class MyGame(arcade.Window):
     """
@@ -27,6 +28,11 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         arcade.set_background_color(arcade.color.BLACK)
+
+        self.left_pressed = False
+        self.right_pressed = False
+        self.up_pressed = False
+        self.down_pressed = False
 
         # If you have sprite lists, you should create them here,
         # and set them to None
@@ -103,8 +109,47 @@ class MyGame(arcade.Window):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
+        # Calculate speed based on the keys pressed
+        self.zombie.change_x = 0
+        self.zombie.change_y = 0
 
+        if self.up_pressed and not self.down_pressed:
+            self.zombie.change_y = MOVEMENT_SPEED
+        elif self.down_pressed and not self.up_pressed:
+            self.zombie.change_y = -MOVEMENT_SPEED
+        if self.left_pressed and not self.right_pressed:
+            self.zombie.change_x = -MOVEMENT_SPEED
+        elif self.right_pressed and not self.left_pressed:
+            self.zombie.change_x = MOVEMENT_SPEED
 
+        # Call update to move the sprite
+        # If using a physics engine, call update on it instead of the sprite
+        # list.
+        self.zombie.update()
+
+    def on_key_press(self, key, modifiers):
+        """Called whenever a key is pressed. """
+
+        if key == arcade.key.UP:
+            self.up_pressed = True
+        elif key == arcade.key.DOWN:
+            self.down_pressed = True
+        elif key == arcade.key.LEFT:
+            self.left_pressed = True
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = True
+
+    def on_key_release(self, key, modifiers):
+        """Called when the user releases a key. """
+
+        if key == arcade.key.UP:
+            self.up_pressed = False
+        elif key == arcade.key.DOWN:
+            self.down_pressed = False
+        elif key == arcade.key.LEFT:
+            self.left_pressed = False
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = False
 
 
 def main():
