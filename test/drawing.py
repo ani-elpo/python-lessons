@@ -47,7 +47,6 @@ class MyGame(arcade.Window):
         self.zombie = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=TILE_SCALE)
         self.zombie.center_x = TILE_SIZE / 2
         self.zombie.center_y = TILE_SIZE + TILE_SIZE / 2
-        self.zombie.draw()
 
     def setup_ground(self):
         self.ground = arcade.SpriteList()
@@ -56,7 +55,6 @@ class MyGame(arcade.Window):
                 lava = arcade.Sprite(":resources:images/tiles/lava.png", scale=TILE_SCALE, center_x=TILE_SIZE / 2, center_y=TILE_SIZE / 2)
                 lava.center_x += i*TILE_SIZE
                 self.ground.append(lava)
-        self.ground.draw()
 
     def setup_boxes(self):
         self.boxes = arcade.SpriteList()
@@ -65,7 +63,6 @@ class MyGame(arcade.Window):
             box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
             box.center_x += i*(TILE_SIZE+(BOX_NO*40))
             self.boxes.append(box)
-        self.boxes.draw()
 
     def setup_plats(self):
         self.plats = arcade.SpriteList()
@@ -78,7 +75,6 @@ class MyGame(arcade.Window):
             plat.center_x += i*(TILE_SIZE+(PLAT_NO*40))
             self.plats.append(plat)
 
-        self.plats.draw()
 
 
     def on_draw(self):
@@ -89,13 +85,14 @@ class MyGame(arcade.Window):
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         arcade.start_render()
-        # self.zombie.draw()
-        # self.ground.draw()
-        # self.boxes.draw()
-        self.setup_zombie()
-        self.setup_ground()
-        self.setup_boxes()
-        self.setup_plats()
+        self.zombie.draw()
+        self.ground.draw()
+        self.boxes.draw()
+        self.plats.draw()
+        # self.setup_zombie()
+        # self.setup_ground()
+        # self.setup_boxes()
+        # self.setup_plats()
 
 
 
