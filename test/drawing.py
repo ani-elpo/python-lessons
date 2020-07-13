@@ -7,10 +7,10 @@ SCREEN_WIDTH = 1250
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "zombie game"
 
-TILE_SCALE = 0.25
-TILE_SIZE = 32
+TILE_SCALE = 0.5
+TILE_SIZE = 64
 
-BOX_NO = 10
+BOX_NO = 5
 PLAT_NO = 5
 
 
@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
 
         for i in range(BOX_NO):
             box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
-            box.center_x += i*(TILE_SIZE+(BOX_NO*7))
+            box.center_x += i*(TILE_SIZE+(BOX_NO*40))
             self.boxes.append(box)
         self.boxes.draw()
 
