@@ -16,6 +16,7 @@ PLAT_NO = 5
 MOVEMENT_SPEED = 5
 
 GRAVITY = 0.5
+JUMP_SPEED = 14
 
 class MyGame(arcade.Window):
     """
@@ -35,6 +36,8 @@ class MyGame(arcade.Window):
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
+
+        self.jump_pressed = False
 
         self.physics_engine = None
 
@@ -118,8 +121,8 @@ class MyGame(arcade.Window):
         need it.
         """
         # Calculate speed based on the keys pressed
+
         self.zombie.change_x = 0
-        self.zombie.change_y = 0
 
         if self.up_pressed and not self.down_pressed:
             self.zombie.change_y = MOVEMENT_SPEED
@@ -129,6 +132,10 @@ class MyGame(arcade.Window):
             self.zombie.change_x = -MOVEMENT_SPEED
         elif self.right_pressed and not self.left_pressed:
             self.zombie.change_x = MOVEMENT_SPEED
+        if self.jump_pressed:
+            if self.physics_engine.can_jump():
+                self.zombie.change_y = JUMP_SPEED
+                self.jump_pressed = False
 
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite
@@ -140,7 +147,7 @@ class MyGame(arcade.Window):
         """Called whenever a key is pressed. """
 
         if key == arcade.key.UP:
-            self.up_pressed = True
+            self.jump_pressed = True
         elif key == arcade.key.DOWN:
             self.down_pressed = True
         elif key == arcade.key.LEFT:
@@ -161,7 +168,7 @@ class MyGame(arcade.Window):
         """Called when the user releases a key. """
 
         if key == arcade.key.UP:
-            self.up_pressed = False
+            self.jump_pressed = False
         elif key == arcade.key.DOWN:
             self.down_pressed = False
         elif key == arcade.key.LEFT:
@@ -192,10 +199,3 @@ if __name__ == "__main__":
 
 
 
-
-
-# change screen width DONE
-# scale zombie and put him on the grass DONE
-# place boxes on grass DONE
-# create floating platforms
-# organise setup method (refactoring) DONE
