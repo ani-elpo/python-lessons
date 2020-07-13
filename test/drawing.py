@@ -139,6 +139,15 @@ class MyGame(arcade.Window):
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
 
+        if key == arcade.key.W:
+            self.up_pressed = True
+        elif key == arcade.key.S:
+            self.down_pressed = True
+        elif key == arcade.key.A:
+            self.left_pressed = True
+        elif key == arcade.key.D:
+            self.right_pressed = True
+
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
@@ -149,6 +158,15 @@ class MyGame(arcade.Window):
         elif key == arcade.key.LEFT:
             self.left_pressed = False
         elif key == arcade.key.RIGHT:
+            self.right_pressed = False
+
+        if key == arcade.key.W:
+            self.up_pressed = False
+        elif key == arcade.key.S:
+            self.down_pressed = False
+        elif key == arcade.key.A:
+            self.left_pressed = False
+        elif key == arcade.key.D:
             self.right_pressed = False
 
 
