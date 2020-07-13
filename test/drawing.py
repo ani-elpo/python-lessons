@@ -11,6 +11,7 @@ TILE_SCALE = 0.25
 TILE_SIZE = 32
 
 BOX_NO = 10
+PLAT_NO = 5
 
 
 class MyGame(arcade.Window):
@@ -33,12 +34,14 @@ class MyGame(arcade.Window):
         self.zombie = None
         self.ground = None
         self.boxes = None
+        self.plats = None
 
     def setup(self):
         # Create your sprites and sprite lists here
         self.setup_zombie()
         self.setup_ground()
         self.setup_boxes()
+        self.setup_plats()
 
     def setup_zombie(self):
         self.zombie = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=TILE_SCALE)
@@ -59,11 +62,23 @@ class MyGame(arcade.Window):
         self.boxes = arcade.SpriteList()
 
         for i in range(BOX_NO):
-                box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
-                box.center_x += i*(TILE_SIZE+(BOX_NO*7))
-                self.boxes.append(box)
+            box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
+            box.center_x += i*(TILE_SIZE+(BOX_NO*7))
+            self.boxes.append(box)
         self.boxes.draw()
 
+    def setup_plats(self):
+        self.plats = arcade.SpriteList()
+
+        for i in range(PLAT_NO):
+            plat = arcade.Sprite(":resources:images/tiles/dirtHalf_left.png", scale=TILE_SCALE, center_x=TILE_SIZE * 3.5, center_y=TILE_SIZE * 3)
+            plat.center_x += i*(TILE_SIZE+(PLAT_NO*40))
+            self.plats.append(plat)
+            plat = arcade.Sprite(":resources:images/tiles/dirtHalf_right.png", scale=TILE_SCALE, center_x=(TILE_SIZE * 3.5) + TILE_SIZE, center_y=TILE_SIZE * 3)
+            plat.center_x += i*(TILE_SIZE+(PLAT_NO*40))
+            self.plats.append(plat)
+
+        self.plats.draw()
 
 
     def on_draw(self):
@@ -80,6 +95,7 @@ class MyGame(arcade.Window):
         self.setup_zombie()
         self.setup_ground()
         self.setup_boxes()
+        self.setup_plats()
 
 
 
@@ -113,4 +129,4 @@ if __name__ == "__main__":
 # scale zombie and put him on the grass DONE
 # place boxes on grass DONE
 # create floating platforms
-# organise setup method (refactoring)
+# organise setup method (refactoring) DONE
