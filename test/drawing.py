@@ -15,6 +15,8 @@ PLAT_NO = 5
 
 MOVEMENT_SPEED = 5
 
+GRAVITY = 0.5
+
 class MyGame(arcade.Window):
     """
     Main application class.
@@ -34,6 +36,8 @@ class MyGame(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
 
+        self.physics_engine = None
+
         # If you have sprite lists, you should create them here,
         # and set them to None
 
@@ -48,6 +52,10 @@ class MyGame(arcade.Window):
         self.setup_ground()
         self.setup_boxes()
         self.setup_plats()
+
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.zombie,
+                                                             self.ground,
+                                                             gravity_constant=GRAVITY)
 
     def setup_zombie(self):
         self.zombie = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=TILE_SCALE)
@@ -125,7 +133,8 @@ class MyGame(arcade.Window):
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite
         # list.
-        self.zombie.update()
+
+        self.physics_engine.update()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
