@@ -13,10 +13,10 @@ TILE_SIZE = 64
 BOX_NO = 5
 PLAT_NO = 5
 
-MOVEMENT_SPEED = 5
+MOVEMENT_SPEED = 4
 
-GRAVITY = 0.5
-JUMP_SPEED = 14
+GRAVITY = 1
+JUMP_SPEED = 18
 
 class MyGame(arcade.Window):
     """
@@ -197,5 +197,5 @@ if __name__ == "__main__":
 
 # homework: remove up/down controls DONE
 # so only left right jump controls DONE
-# experiment with constant values for speed/jump/gravity
+# experiment with constant values for speed/jump/gravity DONE
 # collide with other obstacles as well (can't go thru them)
