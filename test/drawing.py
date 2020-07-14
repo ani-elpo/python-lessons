@@ -34,9 +34,6 @@ class MyGame(arcade.Window):
 
         self.left_pressed = False
         self.right_pressed = False
-        self.up_pressed = False
-        self.down_pressed = False
-
         self.jump_pressed = False
 
         self.physics_engine = None
@@ -124,10 +121,10 @@ class MyGame(arcade.Window):
 
         self.zombie.change_x = 0
 
-        if self.up_pressed and not self.down_pressed:
-            self.zombie.change_y = MOVEMENT_SPEED
-        elif self.down_pressed and not self.up_pressed:
-            self.zombie.change_y = -MOVEMENT_SPEED
+        # if self.jump_pressed and not self.down_pressed:
+        #     self.zombie.change_y = MOVEMENT_SPEED
+        # if self.down_pressed and not self.up_pressed:
+        #     self.zombie.change_y = -MOVEMENT_SPEED
         if self.left_pressed and not self.right_pressed:
             self.zombie.change_x = -MOVEMENT_SPEED
         elif self.right_pressed and not self.left_pressed:
@@ -198,4 +195,7 @@ if __name__ == "__main__":
 
 
 
-
+# homework: remove up/down controls DONE
+# so only left right jump controls DONE
+# experiment with constant values for speed/jump/gravity
+# collide with other obstacles as well (can't go thru them)
