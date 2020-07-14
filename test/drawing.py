@@ -134,6 +134,13 @@ class MyGame(arcade.Window):
                 self.zombie.change_y = JUMP_SPEED
                 self.jump_pressed = False
 
+        if len(arcade.check_for_collision_with_list(self.zombie, self.boxes)) > 0:
+            self.left_pressed = False
+            self.right_pressed = False
+        if len(arcade.check_for_collision_with_list(self.zombie, self.plats)) > 0:
+            self.left_pressed = False
+            self.right_pressed = False
+
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite
         # list.
@@ -145,17 +152,13 @@ class MyGame(arcade.Window):
 
         if key == arcade.key.UP:
             self.jump_pressed = True
-        elif key == arcade.key.DOWN:
-            self.down_pressed = True
         elif key == arcade.key.LEFT:
             self.left_pressed = True
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
 
         if key == arcade.key.W:
-            self.up_pressed = True
-        elif key == arcade.key.S:
-            self.down_pressed = True
+            self.jump_pressed = True
         elif key == arcade.key.A:
             self.left_pressed = True
         elif key == arcade.key.D:
@@ -166,17 +169,13 @@ class MyGame(arcade.Window):
 
         if key == arcade.key.UP:
             self.jump_pressed = False
-        elif key == arcade.key.DOWN:
-            self.down_pressed = False
         elif key == arcade.key.LEFT:
             self.left_pressed = False
         elif key == arcade.key.RIGHT:
             self.right_pressed = False
 
         if key == arcade.key.W:
-            self.up_pressed = False
-        elif key == arcade.key.S:
-            self.down_pressed = False
+            self.jump_pressed = False
         elif key == arcade.key.A:
             self.left_pressed = False
         elif key == arcade.key.D:
