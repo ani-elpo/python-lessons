@@ -7,15 +7,16 @@ SCREEN_WIDTH = 1250
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "zombie game"
 
-PLAYER_MOVEMENT_SPEED = 10
-GRAVITY = 1
-PLAYER_JUMP_SPEED = 15
-
 TILE_SCALE = 0.5
 TILE_SIZE = 64
 
-BOX_NO = 10
+BOX_NO = 5
+PLAT_NO = 5
 
+MOVEMENT_SPEED = 4
+
+GRAVITY = 1
+JUMP_SPEED = 18
 
 class MyGame(arcade.Window):
     """
@@ -31,22 +32,30 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
+        self.left_pressed = False
+        self.right_pressed = False
+        self.jump_pressed = False
+
+        self.physics_engine = None
+
         # If you have sprite lists, you should create them here,
         # and set them to None
 
         self.zombie = None
         self.ground = None
         self.boxes = None
-
-        self.physics_engine = None
+        self.plats = None
 
     def setup(self):
         # Create your sprites and sprite lists here
         self.setup_zombie()
         self.setup_ground()
         self.setup_boxes()
+        self.setup_plats()
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.zombie, self.ground, GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.zombie,
+                                                             self.ground,
+                                                             gravity_constant=GRAVITY)
 
     def setup_zombie(self):
         self.zombie = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=TILE_SCALE)
@@ -65,9 +74,20 @@ class MyGame(arcade.Window):
         self.boxes = arcade.SpriteList()
 
         for i in range(BOX_NO):
-                box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
-                box.center_x += i*(TILE_SIZE+(BOX_NO*7))
-                self.boxes.append(box)
+            box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
+            box.center_x += i*(TILE_SIZE+(BOX_NO*40))
+            self.boxes.append(box)
+
+    def setup_plats(self):
+        self.plats = arcade.SpriteList()
+
+        for i in range(PLAT_NO):
+            plat = arcade.Sprite(":resources:images/tiles/dirtHalf_left.png", scale=TILE_SCALE, center_x=TILE_SIZE * 3.5, center_y=TILE_SIZE * 3)
+            plat.center_x += i*(TILE_SIZE+(PLAT_NO*40))
+            self.plats.append(plat)
+            plat = arcade.Sprite(":resources:images/tiles/dirtHalf_right.png", scale=TILE_SCALE, center_x=(TILE_SIZE * 3.5) + TILE_SIZE, center_y=TILE_SIZE * 3)
+            plat.center_x += i*(TILE_SIZE+(PLAT_NO*40))
+            self.plats.append(plat)
 
 
 
@@ -82,9 +102,11 @@ class MyGame(arcade.Window):
         self.zombie.draw()
         self.ground.draw()
         self.boxes.draw()
+        self.plats.draw()
         # self.setup_zombie()
         # self.setup_ground()
         # self.setup_boxes()
+        # self.setup_plats()
 
 
 
@@ -95,32 +117,69 @@ class MyGame(arcade.Window):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
+        # Calculate speed based on the keys pressed
+
+        self.zombie.change_x = 0
+
+        # if self.jump_pressed and not self.down_pressed:
+        #     self.zombie.change_y = MOVEMENT_SPEED
+        # if self.down_pressed and not self.up_pressed:
+        #     self.zombie.change_y = -MOVEMENT_SPEED
+        if self.left_pressed and not self.right_pressed:
+            self.zombie.change_x = -MOVEMENT_SPEED
+        elif self.right_pressed and not self.left_pressed:
+            self.zombie.change_x = MOVEMENT_SPEED
+        if self.jump_pressed:
+            if self.physics_engine.can_jump():
+                self.zombie.change_y = JUMP_SPEED
+                self.jump_pressed = False
+
+        if len(arcade.check_for_collision_with_list(self.zombie, self.boxes)) > 0:
+            self.left_pressed = False
+            self.right_pressed = False
+        if len(arcade.check_for_collision_with_list(self.zombie, self.plats)) > 0:
+            self.left_pressed = False
+            self.right_pressed = False
+
+        # Call update to move the sprite
+        # If using a physics engine, call update on it instead of the sprite
+        # list.
+
         self.physics_engine.update()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP or key == arcade.key.W:
-            if self.physics_engine.can_jump():
-                self.zombie.change_y = PLAYER_JUMP_SPEED
-        elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.zombie.change_y = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.zombie.change_x = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.zombie.change_x = PLAYER_MOVEMENT_SPEED
+        if key == arcade.key.UP:
+            self.jump_pressed = True
+        elif key == arcade.key.LEFT:
+            self.left_pressed = True
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = True
+
+        if key == arcade.key.W:
+            self.jump_pressed = True
+        elif key == arcade.key.A:
+            self.left_pressed = True
+        elif key == arcade.key.D:
+            self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        # if key == arcade.key.UP or key == arcade.key.W:
-        #     self.zombie.change_y = 0
-        # if key == arcade.key.DOWN or key == arcade.key.S:
-        #     self.zombie.change_y = 0
-        if key == arcade.key.LEFT or key == arcade.key.A:
-            self.zombie.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.zombie.change_x = 0
+        if key == arcade.key.UP:
+            self.jump_pressed = False
+        elif key == arcade.key.LEFT:
+            self.left_pressed = False
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = False
+
+        if key == arcade.key.W:
+            self.jump_pressed = False
+        elif key == arcade.key.A:
+            self.left_pressed = False
+        elif key == arcade.key.D:
+            self.right_pressed = False
 
 
 def main():
@@ -135,11 +194,7 @@ if __name__ == "__main__":
 
 
 
-
-
-
-# change screen width DONE
-# scale zombie and put him on the grass DONE
-# place boxes on grass DONE
-# create floating platforms
-# organise setup method (refactoring)
+# homework: remove up/down controls DONE
+# so only left right jump controls DONE
+# experiment with constant values for speed/jump/gravity DONE
+# collide with other obstacles as well (can't go thru them)
