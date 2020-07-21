@@ -10,6 +10,8 @@ SCREEN_TITLE = "zombie game"
 TILE_SCALE = 0.5
 TILE_SIZE = 64
 
+COLLECT_SCALE = 1/4.25
+
 BOX_NO = 5
 PLAT_NO = 5
 
@@ -45,17 +47,24 @@ class MyGame(arcade.Window):
         self.ground = None
         self.boxes = None
         self.plats = None
+        self.obstacle_list = None
+
+        self.collectibles = None
 
     def setup(self):
         # Create your sprites and sprite lists here
+        self.obstacle_list = arcade.SpriteList()
+
         self.setup_zombie()
         self.setup_ground()
         self.setup_boxes()
         self.setup_plats()
+        self.setup_collectible()
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.zombie,
-                                                             self.ground,
+        self.physics_engine = arcade.PhysicsEnginePlatformer(player_sprite=self.zombie,
+                                                             platforms=self.obstacle_list,
                                                              gravity_constant=GRAVITY)
+
 
     def setup_zombie(self):
         self.zombie = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=TILE_SCALE)
@@ -69,6 +78,7 @@ class MyGame(arcade.Window):
                 lava = arcade.Sprite(":resources:images/tiles/lava.png", scale=TILE_SCALE, center_x=TILE_SIZE / 2, center_y=TILE_SIZE / 2)
                 lava.center_x += i*TILE_SIZE
                 self.ground.append(lava)
+                self.obstacle_list.append(lava)
 
     def setup_boxes(self):
         self.boxes = arcade.SpriteList()
@@ -77,6 +87,7 @@ class MyGame(arcade.Window):
             box = arcade.Sprite(":resources:images/tiles/boxCrate.png", scale=TILE_SCALE, center_x=TILE_SIZE * 2.5, center_y=TILE_SIZE * 1.5)
             box.center_x += i*(TILE_SIZE+(BOX_NO*40))
             self.boxes.append(box)
+            self.obstacle_list.append(box)
 
     def setup_plats(self):
         self.plats = arcade.SpriteList()
@@ -85,10 +96,20 @@ class MyGame(arcade.Window):
             plat = arcade.Sprite(":resources:images/tiles/dirtHalf_left.png", scale=TILE_SCALE, center_x=TILE_SIZE * 3.5, center_y=TILE_SIZE * 3)
             plat.center_x += i*(TILE_SIZE+(PLAT_NO*40))
             self.plats.append(plat)
+            self.obstacle_list.append(plat)
+
             plat = arcade.Sprite(":resources:images/tiles/dirtHalf_right.png", scale=TILE_SCALE, center_x=(TILE_SIZE * 3.5) + TILE_SIZE, center_y=TILE_SIZE * 3)
             plat.center_x += i*(TILE_SIZE+(PLAT_NO*40))
             self.plats.append(plat)
+            self.obstacle_list.append(plat)
 
+    def setup_collectible(self):
+        self.collectibles = arcade.SpriteList()
+
+        for i in range(1):
+            flask = arcade.Sprite("assets/Colored/genericItem_color_105.png", center_x=TILE_SIZE * 3.5, center_y=(TILE_SIZE * 3)+TILE_SIZE)
+            flask.scale = TILE_SIZE/(2*flask.height)
+            self.collectibles.append(flask)
 
 
     def on_draw(self):
@@ -103,10 +124,7 @@ class MyGame(arcade.Window):
         self.ground.draw()
         self.boxes.draw()
         self.plats.draw()
-        # self.setup_zombie()
-        # self.setup_ground()
-        # self.setup_boxes()
-        # self.setup_plats()
+        self.collectibles.draw()
 
 
 
@@ -134,12 +152,12 @@ class MyGame(arcade.Window):
                 self.zombie.change_y = JUMP_SPEED
                 self.jump_pressed = False
 
-        if len(arcade.check_for_collision_with_list(self.zombie, self.boxes)) > 0:
-            self.left_pressed = False
-            self.right_pressed = False
-        if len(arcade.check_for_collision_with_list(self.zombie, self.plats)) > 0:
-            self.left_pressed = False
-            self.right_pressed = False
+
+        hit_list = arcade.check_for_collision_with_list(self.zombie,
+                                                        self.collectibles)
+
+        for item in hit_list:
+            self.collectibles.remove(item)
 
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite
@@ -198,3 +216,5 @@ if __name__ == "__main__":
 # so only left right jump controls DONE
 # experiment with constant values for speed/jump/gravity DONE
 # collide with other obstacles as well (can't go thru them)
+
+# genericItem_color_105
