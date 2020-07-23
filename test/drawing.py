@@ -51,6 +51,8 @@ class MyGame(arcade.Window):
 
         self.collectibles = None
 
+        self.score = None
+
     def setup(self):
         # Create your sprites and sprite lists here
         self.obstacle_list = arcade.SpriteList()
@@ -60,6 +62,8 @@ class MyGame(arcade.Window):
         self.setup_boxes()
         self.setup_plats()
         self.setup_collectible()
+
+        self.score = 0
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(player_sprite=self.zombie,
                                                              platforms=self.obstacle_list,
@@ -106,9 +110,11 @@ class MyGame(arcade.Window):
     def setup_collectible(self):
         self.collectibles = arcade.SpriteList()
 
-        for i in range(1):
+        for i in range(6):
             flask = arcade.Sprite("assets/Colored/genericItem_color_105.png", center_x=TILE_SIZE * 3.5, center_y=(TILE_SIZE * 3)+TILE_SIZE)
             flask.scale = TILE_SIZE/(2*flask.height)
+            flask.center_x += i*TILE_SIZE*4
+            self.collectibles.append(flask)
             self.collectibles.append(flask)
 
 
@@ -126,6 +132,9 @@ class MyGame(arcade.Window):
         self.plats.draw()
         self.collectibles.draw()
 
+        output = f"Score: {self.score}"
+        arcade.draw_text(output, (SCREEN_WIDTH*1.5)-10, SCREEN_HEIGHT/2, arcade.color.WHITE, 40)
+
 
 
 
@@ -136,6 +145,13 @@ class MyGame(arcade.Window):
         need it.
         """
         # Calculate speed based on the keys pressed
+
+        arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
+
+        for i in range(SCREEN_WIDTH*2):
+
+            if self.zombie.center_x >= i+50:
+                arcade.set_viewport(i, SCREEN_WIDTH + i, 0, SCREEN_HEIGHT)
 
         self.zombie.change_x = 0
 
@@ -158,6 +174,7 @@ class MyGame(arcade.Window):
 
         for item in hit_list:
             self.collectibles.remove(item)
+            self.score += 1
 
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite
@@ -212,9 +229,8 @@ if __name__ == "__main__":
 
 
 
-# homework: remove up/down controls DONE
-# so only left right jump controls DONE
-# experiment with constant values for speed/jump/gravity DONE
-# collide with other obstacles as well (can't go thru them)
+# homework: add more flasks wherever DONE
+# something should happen when u collect - score goes up (add score) DONE
+# research cam movement; function is arcade.set_viewport
 
 # genericItem_color_105
