@@ -148,10 +148,9 @@ class MyGame(arcade.Window):
 
         arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
 
-        for i in range(SCREEN_WIDTH*2):
-
-            if self.zombie.center_x >= i+50:
-                arcade.set_viewport(i, SCREEN_WIDTH + i, 0, SCREEN_HEIGHT)
+        # for i in range(SCREEN_WIDTH*2):
+        if self.zombie.center_x >= 50:
+            arcade.set_viewport(self.zombie.center_x - 45, SCREEN_WIDTH + (self.zombie.center_x - 45), 0, SCREEN_HEIGHT)
 
         self.zombie.change_x = 0
 
