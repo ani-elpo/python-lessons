@@ -20,6 +20,37 @@ MOVEMENT_SPEED = 4
 GRAVITY = 1
 JUMP_SPEED = 18
 
+
+class Enemy(arcade.Sprite):
+
+    def __init__(self, *args, speed=2, **kwargs):
+        super().__init__(":resources:images/enemies/fly.png", *args, **kwargs)
+
+        self.speed = speed
+
+        self.boundary_top = SCREEN_HEIGHT - 35
+        self.boundary_bottom = (SCREEN_HEIGHT/2) - 30
+
+
+    def move(self):
+        if self.top > self.boundary_top:
+            self.change_y -= self.speed
+        elif self.bottom < self.boundary_bottom:
+            self.change_y += self.speed
+
+class Player(arcade.Sprite):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(":resources:images/animated_characters/zombie/zombie_idle.png", *args, **kwargs)
+
+    def move(self):
+        self.change_x = 0
+        arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
+
+        # for i in range(SCREEN_WIDTH*2):
+        if self.center_x >= 50:
+            arcade.set_viewport(self.center_x - 45, SCREEN_WIDTH + (self.center_x - 45), 0, SCREEN_HEIGHT)
+
 class MyGame(arcade.Window):
     """
     Main application class.
@@ -48,10 +79,13 @@ class MyGame(arcade.Window):
         self.boxes = None
         self.plats = None
         self.obstacle_list = None
+        self.enemies = None
 
         self.collectibles = None
 
         self.score = None
+
+        self.game_over = False
 
     def setup(self):
         # Create your sprites and sprite lists here
@@ -62,6 +96,7 @@ class MyGame(arcade.Window):
         self.setup_boxes()
         self.setup_plats()
         self.setup_collectible()
+        self.setup_enemies()
 
         self.score = 0
 
@@ -71,9 +106,7 @@ class MyGame(arcade.Window):
 
 
     def setup_zombie(self):
-        self.zombie = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=TILE_SCALE)
-        self.zombie.center_x = TILE_SIZE / 2
-        self.zombie.center_y = TILE_SIZE + TILE_SIZE / 2
+        self.zombie = Player(scale=TILE_SCALE, center_x=TILE_SIZE / 2, center_y=TILE_SIZE + TILE_SIZE / 2)
 
     def setup_ground(self):
         self.ground = arcade.SpriteList()
@@ -115,7 +148,14 @@ class MyGame(arcade.Window):
             flask.scale = TILE_SIZE/(2*flask.height)
             flask.center_x += i*TILE_SIZE*4
             self.collectibles.append(flask)
-            self.collectibles.append(flask)
+
+    def setup_enemies(self):
+        self.enemies = arcade.SpriteList()
+
+        for i in range(3):
+            fly = Enemy(speed=1, center_x=SCREEN_WIDTH/2, center_y=(SCREEN_HEIGHT/2) - 30, scale=TILE_SCALE)
+            fly.center_x += i*TILE_SIZE*6
+            self.enemies.append(fly)
 
 
     def on_draw(self):
@@ -131,6 +171,7 @@ class MyGame(arcade.Window):
         self.boxes.draw()
         self.plats.draw()
         self.collectibles.draw()
+        self.enemies.draw()
 
         output = f"Score: {self.score}"
         arcade.draw_text(output, (SCREEN_WIDTH*1.5)-10, SCREEN_HEIGHT/2, arcade.color.WHITE, 40)
@@ -146,14 +187,7 @@ class MyGame(arcade.Window):
         """
         # Calculate speed based on the keys pressed
 
-        arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
-
-        for i in range(SCREEN_WIDTH*2):
-
-            if self.zombie.center_x >= i+50:
-                arcade.set_viewport(i, SCREEN_WIDTH + i, 0, SCREEN_HEIGHT)
-
-        self.zombie.change_x = 0
+        self.zombie.move()
 
         # if self.jump_pressed and not self.down_pressed:
         #     self.zombie.change_y = MOVEMENT_SPEED
@@ -168,13 +202,24 @@ class MyGame(arcade.Window):
                 self.zombie.change_y = JUMP_SPEED
                 self.jump_pressed = False
 
-
         hit_list = arcade.check_for_collision_with_list(self.zombie,
                                                         self.collectibles)
 
         for item in hit_list:
             self.collectibles.remove(item)
             self.score += 1
+
+        for enemy in self.enemies:
+            enemy.move()
+
+        self.enemies.update()
+
+        if len(arcade.check_for_collision_with_list(self.zombie, self.enemies)) > 0:
+            self.game_over = True
+
+        if self.game_over:
+            self.score = 0
+            self.setup()
 
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite
@@ -229,8 +274,11 @@ if __name__ == "__main__":
 
 
 
-# homework: add more flasks wherever DONE
-# something should happen when u collect - score goes up (add score) DONE
-# research cam movement; function is arcade.set_viewport
+# homework: make the fly go up and down properly DONE
+# make more flies DONE
+# make player die if it hits fly (restart game)
+# put the player in its own class DONE
 
-# genericItem_color_105
+# (tiled editor) -> download + draw a level
+# platformer redux pack from kenney.nl\
+
