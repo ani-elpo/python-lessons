@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="85" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="8" nextobjectid="1">
+ <tileset firstgid="1" source="ground.tsx"/>
+ <tileset firstgid="129" source="spritesheet_enemies.tsx"/>
+ <tileset firstgid="257" source="spritesheet_items.tsx"/>
+ <tileset firstgid="289" source="genericitems.tsx"/>
+ <tileset firstgid="292" source="spritesheet_tiles.tsx"/>
+ <layer id="1" name="ground layer" width="85" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WCQGcUBAIA8AAAATFREAAAAfAUAAAA0DIAgL/FNOwWvksGl6psqVWJ8UZWd9kStcYBq6JbF1eolARVRqy4G
+  </data>
+ </layer>
+ <layer id="5" name="box layer" width="85" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WCQGb0BAFgAADQBNAE0ATQBAA+AcEMP7jj1v+B8teaLBYqYJFRAu5LvDaxvLQJWP/ZUc7XUGKCyc9yYHug=
+  </data>
+ </layer>
+ <layer id="6" name="platform layer" width="85" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WCQGXUCANgAABcANwAAAF4AAAAvFw8AAAAHfgAXDwcAFwARoPBuaznwgpu4G+9UT+hEpdJYtIBUTjo9lviZ6BtKaBDcdIJGVQ0mtfA15VW1aehLCw==
+  </data>
+ </layer>
+ <layer id="2" name="enemy layer" width="85" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WCQGU0AABAAAAEAi9oDLA==
+  </data>
+ </layer>
+ <layer id="7" name="spike layer" width="85" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WCQGZUBAFAAAJ0BnQGdAZ0BDoBQwwOlONV2kkAE6GeKV4F7YT5lATXFIlFJgLIilwAVO9tx9MAG
+  </data>
+ </layer>
+ <layer id="4" name="water layer" width="85" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WCQGSUCALAAACUBLQEtATZfAQAAV19gAQAALgEAE6AwaWsxIAOM2wFuaozQFR2vfPnGE4LX0WjhzpayP/48SxennrKfb/tX9XkE
+  </data>
+ </layer>
+ <layer id="3" name="collectible layer" width="85" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WCQGf0BAHgAACMBACIBACMhASEBACIOgDDHHozTS00ZV3dlpLki53i56eD9UvmYMxdAySOCGvVtUZnh6vxB2oL0Z9EDFg==
+  </data>
+ </layer>
+</map>

@@ -78,8 +78,10 @@ class MyGame(arcade.Window):
         self.ground = None
         self.boxes = None
         self.plats = None
+        self.water = None
         self.obstacle_list = None
         self.enemies = None
+        self.spikes = None
 
         self.collectibles = None
 
@@ -92,11 +94,12 @@ class MyGame(arcade.Window):
         self.obstacle_list = arcade.SpriteList()
 
         self.setup_zombie()
-        self.setup_ground()
-        self.setup_boxes()
-        self.setup_plats()
-        self.setup_collectible()
-        self.setup_enemies()
+        # self.setup_ground()
+        # self.setup_boxes()
+        # self.setup_plats()
+        # self.setup_collectible()
+        # self.setup_enemies()
+        self.setup_map()
 
         self.score = 0
 
@@ -157,6 +160,42 @@ class MyGame(arcade.Window):
             fly.center_x += i*TILE_SIZE*6
             self.enemies.append(fly)
 
+    def setup_spikes(self):
+        self.spikes = arcade.SpriteList()
+
+    def setup_map(self):
+        # Name of map file to load
+        map_name = "maps/level1.tmx"
+        # Name of the layer in the file that has our platforms/walls
+        ground_layer_name = 'ground layer'
+        # Name of the layer that has items for pick-up
+        collectible_layer_name = 'collectible layer'
+
+        water_layer_name = 'water layer'
+
+        platform_layer_name = 'platform layer'
+
+        box_layer_name = 'box layer'
+
+        spike_layer_name = 'spike layer'
+
+        # Read in the tiled map
+        my_map = arcade.tilemap.read_tmx(map_name)
+
+        self.ground = arcade.tilemap.process_layer(map_object=my_map,
+                                                   layer_name=ground_layer_name,
+                                                   scaling=TILE_SCALE)
+        self.collectibles = arcade.tilemap.process_layer(map_object=my_map,
+                                                   layer_name=collectible_layer_name,
+                                                   scaling=TILE_SCALE)
+        self.water = arcade.tilemap.process_layer(map_object=my_map, layer_name=water_layer_name, scaling=TILE_SCALE)
+        self.plats = arcade.tilemap.process_layer(map_object=my_map, layer_name=platform_layer_name, scaling=TILE_SCALE)
+        self.boxes = arcade.tilemap.process_layer(map_object=my_map, layer_name=box_layer_name, scaling=TILE_SCALE)
+        self.spikes = arcade.tilemap.process_layer(map_object=my_map, layer_name=spike_layer_name, scaling=TILE_SCALE)
+        self.obstacle_list.extend(self.ground)
+        self.obstacle_list.extend(self.plats)
+        self.obstacle_list.extend(self.boxes)
+        # self.obstacle_list.extend(self.spikes)
 
     def on_draw(self):
         """
@@ -166,15 +205,17 @@ class MyGame(arcade.Window):
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         arcade.start_render()
-        self.zombie.draw()
+        self.water.draw()
         self.ground.draw()
-        self.boxes.draw()
         self.plats.draw()
+        self.zombie.draw()
+        self.boxes.draw()
         self.collectibles.draw()
-        self.enemies.draw()
+        self.spikes.draw()
+        # self.enemies.draw()
 
         output = f"Score: {self.score}"
-        arcade.draw_text(output, (SCREEN_WIDTH*1.5)-10, SCREEN_HEIGHT/2, arcade.color.WHITE, 40)
+        arcade.draw_text(output, self.zombie.center_x - 35, self.zombie.center_y + 20, arcade.color.WHITE, 20)
 
 
 
@@ -209,17 +250,23 @@ class MyGame(arcade.Window):
             self.collectibles.remove(item)
             self.score += 1
 
-        for enemy in self.enemies:
-            enemy.move()
+        # for enemy in self.enemies:
+        #     enemy.move()
 
-        self.enemies.update()
+        # self.enemies.update()
 
-        if len(arcade.check_for_collision_with_list(self.zombie, self.enemies)) > 0:
+        # if len(arcade.check_for_collision_with_list(self.zombie, self.enemies)) > 0:
+        #     self.game_over = True
+
+        if len(arcade.check_for_collision_with_list(self.zombie, self.spikes)) > 0:
             self.game_over = True
 
         if self.game_over:
+            print("game over")
             self.score = 0
             self.setup()
+            self.game_over = False
+
 
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite
@@ -274,11 +321,6 @@ if __name__ == "__main__":
 
 
 
-# homework: make the fly go up and down properly DONE
-# make more flies DONE
-# make player die if it hits fly (restart game)
-# put the player in its own class DONE
+# homework: draw a level with more stuff
 
-# (tiled editor) -> download + draw a level
-# platformer redux pack from kenney.nl\
 
