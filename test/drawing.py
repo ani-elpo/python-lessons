@@ -179,6 +179,8 @@ class MyGame(arcade.Window):
 
         spike_layer_name = 'spike layer'
 
+        enemies_layer_name = 'enemies layer'
+
         # Read in the tiled map
         my_map = arcade.tilemap.read_tmx(map_name)
 
@@ -192,6 +194,12 @@ class MyGame(arcade.Window):
         self.plats = arcade.tilemap.process_layer(map_object=my_map, layer_name=platform_layer_name, scaling=TILE_SCALE)
         self.boxes = arcade.tilemap.process_layer(map_object=my_map, layer_name=box_layer_name, scaling=TILE_SCALE)
         self.spikes = arcade.tilemap.process_layer(map_object=my_map, layer_name=spike_layer_name, scaling=TILE_SCALE)
+        enemies = arcade.tilemap.process_layer(map_object=my_map, layer_name=enemies_layer_name, scaling=TILE_SCALE)
+        for sprite in enemies:
+            fly = Enemy(center_x=sprite.center_x, center_y=sprite.center_y, scale=sprite.scale)
+            fly.texture = sprite.texture
+            self.enemies = arcade.SpriteList()
+            self.enemies.append(fly)
         self.obstacle_list.extend(self.ground)
         self.obstacle_list.extend(self.plats)
         self.obstacle_list.extend(self.boxes)
@@ -212,7 +220,7 @@ class MyGame(arcade.Window):
         self.boxes.draw()
         self.collectibles.draw()
         self.spikes.draw()
-        # self.enemies.draw()
+        self.enemies.draw()
 
         output = f"Score: {self.score}"
         arcade.draw_text(output, self.zombie.center_x - 35, self.zombie.center_y + 20, arcade.color.WHITE, 20)
@@ -250,13 +258,13 @@ class MyGame(arcade.Window):
             self.collectibles.remove(item)
             self.score += 1
 
-        # for enemy in self.enemies:
-        #     enemy.move()
+        for enemy in self.enemies:
+            enemy.move()
 
-        # self.enemies.update()
+        self.enemies.update()
 
-        # if len(arcade.check_for_collision_with_list(self.zombie, self.enemies)) > 0:
-        #     self.game_over = True
+        if len(arcade.check_for_collision_with_list(self.zombie, self.enemies)) > 0:
+            self.game_over = True
 
         if len(arcade.check_for_collision_with_list(self.zombie, self.spikes)) > 0:
             self.game_over = True
