@@ -4,7 +4,7 @@ import arcade
 
 import logging as log
 
-log.basicConfig(format='%(asctime)s  %(levelname)8s:  %(message)s', level=log.INFO)
+log.basicConfig(format='%(asctime)s  %(levelname)8s:  %(message)s', level=log.DEBUG)
 
 
 # Set constants for the screen size
@@ -44,6 +44,7 @@ class Enemy(arcade.Sprite):
             self.change_y = -self.speed
         elif self.bottom < self.boundary_bottom:
             self.change_y = self.speed
+        log.debug(f"enemy's center_y is {self.center_y} and its center_x is {self.center_x}")
 
 class Player(arcade.Sprite):
 
@@ -204,7 +205,7 @@ class MyGame(arcade.Window):
         self.spikes = arcade.tilemap.process_layer(map_object=my_map, layer_name=spike_layer_name, scaling=TILE_SCALE)
 
         enemies = arcade.tilemap.process_layer(map_object=my_map, layer_name=enemies_layer_name, scaling=TILE_SCALE)
-
+        self.enemies = arcade.SpriteList()
         for sprite in enemies:
             fly = Enemy(center_x=sprite.center_x, center_y=sprite.center_y, scale=sprite.scale)
             fly.texture = sprite.texture
@@ -214,15 +215,15 @@ class MyGame(arcade.Window):
 
             # log.info(f"map width is {my_map.map_size.width}")
 
-            if fly.center_x <= my_map.map_size.width * TILE_SIZE:
-                log.info(f"yay")
+            if 0 < fly.center_x <= my_map.map_size.width * TILE_SIZE and 0 < fly.center_y <= my_map.map_size.height * TILE_SIZE:
+                log.debug(f"should be visible")
 
-            log.info(f"fly's max y point is {fly.boundary_top}")
-            log.info(f"fly's min y point is {fly.boundary_bottom}")
+            log.debug(f"fly's max y point is {fly.boundary_top}")
+            log.debug(f"fly's min y point is {fly.boundary_bottom}")
 
-            log.info(f"fly's center_x is {fly.center_x}")
+            log.debug(f"fly's center_x is {fly.center_x}")
+            log.debug(f"fly's center_y is {fly.center_y}")
 
-            self.enemies = arcade.SpriteList()
             self.enemies.append(fly)
 
         self.obstacle_list.extend(self.ground)
