@@ -2,6 +2,11 @@ import math
 
 import arcade
 
+import logging as log
+
+log.basicConfig(format='%(asctime)s  %(levelname)8s:  %(message)s', level=log.INFO)
+
+
 # Set constants for the screen size
 SCREEN_WIDTH = 1250
 SCREEN_HEIGHT = 600
@@ -17,8 +22,8 @@ PLAT_NO = 5
 
 MOVEMENT_SPEED = 4
 
-GRAVITY = 1
-JUMP_SPEED = 18
+GRAVITY = 1.5
+JUMP_SPEED = 23
 
 
 class Enemy(arcade.Sprite):
@@ -31,12 +36,14 @@ class Enemy(arcade.Sprite):
         self.boundary_top = SCREEN_HEIGHT - 35
         self.boundary_bottom = (SCREEN_HEIGHT/2) - 30
 
+        self.change_y = self.speed
+
 
     def move(self):
         if self.top > self.boundary_top:
-            self.change_y -= self.speed
+            self.change_y = -self.speed
         elif self.bottom < self.boundary_bottom:
-            self.change_y += self.speed
+            self.change_y = self.speed
 
 class Player(arcade.Sprite):
 
@@ -78,8 +85,10 @@ class MyGame(arcade.Window):
         self.ground = None
         self.boxes = None
         self.plats = None
+        self.water = None
         self.obstacle_list = None
         self.enemies = None
+        self.spikes = None
 
         self.collectibles = None
 
@@ -92,11 +101,12 @@ class MyGame(arcade.Window):
         self.obstacle_list = arcade.SpriteList()
 
         self.setup_zombie()
-        self.setup_ground()
-        self.setup_boxes()
-        self.setup_plats()
-        self.setup_collectible()
-        self.setup_enemies()
+        # self.setup_ground()
+        # self.setup_boxes()
+        # self.setup_plats()
+        # self.setup_collectible()
+        # self.setup_enemies()
+        self.setup_map()
 
         self.score = 0
 
@@ -154,9 +164,71 @@ class MyGame(arcade.Window):
 
         for i in range(3):
             fly = Enemy(speed=1, center_x=SCREEN_WIDTH/2, center_y=(SCREEN_HEIGHT/2) - 30, scale=TILE_SCALE)
-            fly.center_x += i*TILE_SIZE*6
+            fly.center_x += i+TILE_SIZE*6
             self.enemies.append(fly)
 
+    def setup_spikes(self):
+        self.spikes = arcade.SpriteList()
+
+    def setup_map(self):
+        # Name of map file to load
+        map_name = "maps/level1.tmx"
+        log.info(f"map loaded")
+        # Name of the layer in the file that has our platforms/walls
+        ground_layer_name = 'ground layer'
+        # Name of the layer that has items for pick-up
+        collectible_layer_name = 'collectible layer'
+
+        water_layer_name = 'water layer'
+
+        platform_layer_name = 'platform layer'
+
+        box_layer_name = 'box layer'
+
+        spike_layer_name = 'spike layer'
+
+        enemies_layer_name = 'enemies layer'
+
+        # Read in the tiled map
+        my_map = arcade.tilemap.read_tmx(map_name)
+
+        self.ground = arcade.tilemap.process_layer(map_object=my_map,
+                                                   layer_name=ground_layer_name,
+                                                   scaling=TILE_SCALE)
+        self.collectibles = arcade.tilemap.process_layer(map_object=my_map,
+                                                   layer_name=collectible_layer_name,
+                                                   scaling=TILE_SCALE)
+        self.water = arcade.tilemap.process_layer(map_object=my_map, layer_name=water_layer_name, scaling=TILE_SCALE)
+        self.plats = arcade.tilemap.process_layer(map_object=my_map, layer_name=platform_layer_name, scaling=TILE_SCALE)
+        self.boxes = arcade.tilemap.process_layer(map_object=my_map, layer_name=box_layer_name, scaling=TILE_SCALE)
+        self.spikes = arcade.tilemap.process_layer(map_object=my_map, layer_name=spike_layer_name, scaling=TILE_SCALE)
+
+        enemies = arcade.tilemap.process_layer(map_object=my_map, layer_name=enemies_layer_name, scaling=TILE_SCALE)
+
+        for sprite in enemies:
+            fly = Enemy(center_x=sprite.center_x, center_y=sprite.center_y, scale=sprite.scale)
+            fly.texture = sprite.texture
+
+            fly.boundary_top = my_map.map_size.height * TILE_SIZE - sprite.properties["max_y"]*TILE_SCALE
+            fly.boundary_bottom = my_map.map_size.height * TILE_SIZE - sprite.properties["min_y"]*TILE_SCALE
+
+            # log.info(f"map width is {my_map.map_size.width}")
+
+            if fly.center_x <= my_map.map_size.width * TILE_SIZE:
+                log.info(f"yay")
+
+            log.info(f"fly's max y point is {fly.boundary_top}")
+            log.info(f"fly's min y point is {fly.boundary_bottom}")
+
+            log.info(f"fly's center_x is {fly.center_x}")
+
+            self.enemies = arcade.SpriteList()
+            self.enemies.append(fly)
+
+        self.obstacle_list.extend(self.ground)
+        self.obstacle_list.extend(self.plats)
+        self.obstacle_list.extend(self.boxes)
+        # self.obstacle_list.extend(self.spikes)
 
     def on_draw(self):
         """
@@ -166,15 +238,17 @@ class MyGame(arcade.Window):
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         arcade.start_render()
-        self.zombie.draw()
+        self.water.draw()
         self.ground.draw()
-        self.boxes.draw()
         self.plats.draw()
+        self.zombie.draw()
+        self.boxes.draw()
         self.collectibles.draw()
+        self.spikes.draw()
         self.enemies.draw()
 
         output = f"Score: {self.score}"
-        arcade.draw_text(output, (SCREEN_WIDTH*1.5)-10, SCREEN_HEIGHT/2, arcade.color.WHITE, 40)
+        arcade.draw_text(output, self.zombie.center_x - 35, self.zombie.center_y + 20, arcade.color.WHITE, 20)
 
 
 
@@ -216,10 +290,17 @@ class MyGame(arcade.Window):
 
         if len(arcade.check_for_collision_with_list(self.zombie, self.enemies)) > 0:
             self.game_over = True
+            log.info(f"game over")
+
+        # if len(arcade.check_for_collision_with_list(self.zombie, self.spikes)) > 0:
+        #     self.game_over = True
 
         if self.game_over:
             self.score = 0
             self.setup()
+            self.game_over = False
+            log.info(f"game restarting")
+
 
         # Call update to move the sprite
         # If using a physics engine, call update on it instead of the sprite
@@ -274,11 +355,7 @@ if __name__ == "__main__":
 
 
 
-# homework: make the fly go up and down properly DONE
-# make more flies DONE
-# make player die if it hits fly (restart game)
-# put the player in its own class DONE
+# homework: finish the flies, fix the problem
+# insert logging in all methods with useful info for important things happening
 
-# (tiled editor) -> download + draw a level
-# platformer redux pack from kenney.nl\
 
