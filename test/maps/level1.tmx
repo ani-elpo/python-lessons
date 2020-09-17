@@ -36,9 +36,9 @@
   </data>
  </layer>
  <objectgroup id="8" name="enemies layer">
-  <object id="1" gid="211" x="2565.21" y="2145.7" width="128" height="128">
+  <object id="1" gid="211" x="2565.21" y="2109.34" width="128" height="128">
    <properties>
-    <property name="max_y" type="float" value="1806.42"/>
+    <property name="max_y" type="float" value="1766.91"/>
     <property name="min_y" type="float" value="2133.7"/>
    </properties>
   </object>
