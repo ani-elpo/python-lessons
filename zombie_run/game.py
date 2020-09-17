@@ -73,32 +73,41 @@ class MyGame(arcade.Window):
 
         self.zombie.move(can_jump=self.physics_engine.can_jump())
 
-        hit_list = arcade.check_for_collision_with_list(self.zombie,
-                                                        self.level.collectibles)
+        self.check_collectibles()
 
-        for item in hit_list:
-            self.level.collectibles.remove(item)
-            self.score += 1
+        self.update_enemies()
 
-        for enemy in self.level.enemies:
-            enemy.move()
+        self.check_for_game_over()
 
-        self.level.enemies.update()
+        if self.game_over:
+            self.restart_game()
 
+        self.physics_engine.update()
+
+    def restart_game(self):
+        self.score = 0
+        self.setup()
+        self.game_over = False
+        log.info(f"game restarting")
+
+    def check_for_game_over(self):
         if len(arcade.check_for_collision_with_list(self.zombie, self.level.enemies)) > 0:
             self.game_over = True
             log.info(f"game over")
-
         if len(arcade.check_for_collision_with_list(self.zombie, self.level.spikes)) > 0 and SPIKES_ACTIVE:
             self.game_over = True
 
-        if self.game_over:
-            self.score = 0
-            self.setup()
-            self.game_over = False
-            log.info(f"game restarting")
+    def update_enemies(self):
+        for enemy in self.level.enemies:
+            enemy.move()
+        self.level.enemies.update()
 
-        self.physics_engine.update()
+    def check_collectibles(self):
+        hit_list = arcade.check_for_collision_with_list(self.zombie,
+                                                        self.level.collectibles)
+        for item in hit_list:
+            self.level.collectibles.remove(item)
+            self.score += 1
 
     def on_key_press(self, key, modifiers):
         self.zombie.on_key_press(key, modifiers)
