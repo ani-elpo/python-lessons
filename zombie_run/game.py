@@ -2,11 +2,9 @@ import logging as log
 import arcade
 
 from zombie_run.level import Level
+from zombie_run.player import Player
 
 log.basicConfig(format='%(asctime)s  %(levelname)8s:  %(message)s', level=log.INFO)
-
-from zombie_run.enemy import Enemy
-from zombie_run.player import Player
 
 SPIKES_ACTIVE = False
 
@@ -36,10 +34,6 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
         self.level = None
-
-        self.left_pressed = False
-        self.right_pressed = False
-        self.jump_pressed = False
 
         self.physics_engine = None
 
@@ -77,16 +71,7 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
 
-        self.zombie.move()
-
-        if self.left_pressed and not self.right_pressed:
-            self.zombie.change_x = -MOVEMENT_SPEED
-        elif self.right_pressed and not self.left_pressed:
-            self.zombie.change_x = MOVEMENT_SPEED
-        if self.jump_pressed:
-            if self.physics_engine.can_jump():
-                self.zombie.change_y = JUMP_SPEED
-                self.jump_pressed = False
+        self.zombie.move(can_jump=self.physics_engine.can_jump())
 
         hit_list = arcade.check_for_collision_with_list(self.zombie,
                                                         self.level.collectibles)
@@ -116,36 +101,10 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
     def on_key_press(self, key, modifiers):
-
-        if key == arcade.key.UP:
-            self.jump_pressed = True
-        elif key == arcade.key.LEFT:
-            self.left_pressed = True
-        elif key == arcade.key.RIGHT:
-            self.right_pressed = True
-
-        if key == arcade.key.W:
-            self.jump_pressed = True
-        elif key == arcade.key.A:
-            self.left_pressed = True
-        elif key == arcade.key.D:
-            self.right_pressed = True
+        self.zombie.on_key_press(key, modifiers)
 
     def on_key_release(self, key, modifiers):
-
-        if key == arcade.key.UP:
-            self.jump_pressed = False
-        elif key == arcade.key.LEFT:
-            self.left_pressed = False
-        elif key == arcade.key.RIGHT:
-            self.right_pressed = False
-
-        if key == arcade.key.W:
-            self.jump_pressed = False
-        elif key == arcade.key.A:
-            self.left_pressed = False
-        elif key == arcade.key.D:
-            self.right_pressed = False
+        self.zombie.on_key_release(key, modifiers)
 
 
 def main():
