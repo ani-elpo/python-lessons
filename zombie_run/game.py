@@ -3,27 +3,14 @@ import arcade
 
 from zombie_run.level import Level
 from zombie_run.player import Player
+from zombie_run.settings import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, TILE_SIZE, TILE_SCALE
 
 log.basicConfig(format='%(asctime)s  %(levelname)8s:  %(message)s', level=log.INFO)
 
 SPIKES_ACTIVE = False
 
-SCREEN_WIDTH = 1250
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "zombie game"
-
-TILE_SCALE = 0.5
-TILE_SIZE = 64
-
-COLLECT_SCALE = 1 / 4.25
-
-BOX_NO = 5
-PLAT_NO = 5
-
-MOVEMENT_SPEED = 4
 
 GRAVITY = 2
-JUMP_SPEED = 23
 
 
 class MyGame(arcade.Window):

@@ -3,9 +3,7 @@ import logging as log
 import arcade
 
 from zombie_run.enemy import Enemy
-
-TILE_SCALE = 0.5
-TILE_SIZE = 64
+from zombie_run.settings import TILE_SCALE, TILE_SIZE
 
 
 class Level:

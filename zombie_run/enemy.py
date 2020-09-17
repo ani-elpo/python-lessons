@@ -1,7 +1,7 @@
 import arcade
 import logging as log
 
-SCREEN_HEIGHT = 600
+from zombie_run.settings import SCREEN_HEIGHT
 
 
 class Enemy(arcade.Sprite):

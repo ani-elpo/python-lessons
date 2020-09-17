@@ -1,7 +1,6 @@
 import arcade
 
-SCREEN_WIDTH = 1250
-SCREEN_HEIGHT = 600
+from zombie_run.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 MOVEMENT_SPEED = 4
 JUMP_SPEED = 23
