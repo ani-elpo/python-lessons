@@ -7,7 +7,7 @@ from zombie_run.settings import TILE_SCALE, TILE_SIZE
 
 
 class Level:
-    def __init__(self):
+    def __init__(self, level):
         self.ground = None
         self.boxes = None
         self.plats = None
@@ -17,10 +17,14 @@ class Level:
         self.spikes = None
         self.collectibles = None
 
+        self.level = level
+
     def setup_map(self):
         self.obstacle_list = arcade.SpriteList()
-
-        map_name = "maps/level1.tmx"
+        if self.level == 1:
+            map_name = "maps/level1.tmx"
+        if self.level == 2:
+            map_name = "maps/level2.tmx"
         log.info(f"map loaded")
         ground_layer_name = 'ground layer'
         collectible_layer_name = 'collectible layer'

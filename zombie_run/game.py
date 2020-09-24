@@ -31,7 +31,7 @@ class MyGame(arcade.Window):
         self.game_over = False
 
     def setup(self):
-        self.level = Level()
+        self.level = Level(level=2)
 
         self.level.setup_map()
 
