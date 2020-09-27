@@ -9,7 +9,7 @@ JUMP_SPEED = 23
 class Player(arcade.Sprite):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(":resources:images/animated_characters/zombie/zombie_idle.png", *args, **kwargs)
+        super().__init__("zombie_idle.png", *args, **kwargs)
         self.left_pressed = False
         self.right_pressed = False
         self.jump_pressed = False

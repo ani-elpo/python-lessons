@@ -7,7 +7,7 @@ from zombie_run.settings import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, TILE_
 
 log.basicConfig(format='%(asctime)s  %(levelname)8s:  %(message)s', level=log.INFO)
 
-SPIKES_ACTIVE = False
+SPIKES_ACTIVE = True
 
 
 GRAVITY = 2
